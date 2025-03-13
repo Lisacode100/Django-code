@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import MaxLengthValidator
 
 class CustomUser(AbstractUser):
     ROLE_CHOICES = [
@@ -40,7 +41,7 @@ class Department(models.Model):
 
 class CourseUnit(models.Model):
     course_unit_name = models.CharField(max_length=100)
-    course_unit_code = models.CharField(max_length=100, unique=True)
+    course_unit_code = models.CharField(max_length=100)
 
     def __str__(self):
         return self.course_unit_name
@@ -68,7 +69,7 @@ class Issue(models.Model):
     issue_status = models.CharField(max_length=50,choices=STATUS_CHOICES,default='Pending')
     
     course_unit = models.ForeignKey(CourseUnit,on_delete=models.CASCADE,null=True)
-    issue_description = models.TextField()
+    issue_description = models.TextField(validators=[MaxLengthValidator(500)],help_text='Limit characters to not more than 500')
     Image = models.ImageField(upload_to='images/',null=True,blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     update = models.DateTimeField(auto_now=True)
